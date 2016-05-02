@@ -1,0 +1,85 @@
+---
+title: "Practical Machine Learning Project"
+author: "Diane Clow"
+date: "May 1, 2016"
+output:
+  html_document:
+    theme: cerulean
+    toc: yes
+---
+
+### Introduction
+
+For this project I am analyzing Human Activity Recognition data, and attempting to predict what excersize the user is performing at any given time.  Each of the participants had sensors placed on their: wrist, bicepts, waist and on the dubbell itself.  There are 5 classes of excersize in this study: Class A: performing the excersize exactly to the specification, Class B: throwing the elbows forward, Class C: lifitng the dumbbell halfway, Class D: lowering the dumbbell halfway, and Class E: throwing the hits to the front.
+
+The training and test data can be downloaded throught the following links:
+
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
+
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+For more information on how this data was collected please go to the study performed by: Ugulino, W.; Cardador, D.; Vega, K.; Velloso, E.; Milidiu, R.; Fuks, H. called "Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements".  The study can be found here: http://groupware.les.inf.puc-rio.br/har.
+
+### Loading & Cleaning the data and creating training/test sets
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library("caret")
+```
+
+```{r, echo=FALSE}
+testing <- read.csv("pml-testing.csv", na.strings=c("NA","#DIV/0!",""))
+training <- read.csv("pml-training.csv", na.strings=c("NA","#DIV/0!",""))
+set.seed(12345)
+```
+
+For this analysis there are `r nrow(training)` values and `r ncol(training)` columns in the training set.  The test set contains `r nrow(testing)` values and the same `r ncol(testing)` columns.
+
+```{r, echo=FALSE}
+mostlyNA <- sapply(training, function(x) mean(is.na(x))) > 0.95
+training <- training[ , mostlyNA == FALSE]
+testing <- testing[ , mostlyNA == FALSE]
+
+NZV <- nearZeroVar(training)
+training <- training[ , -NZV]
+testing <- testing[ , -NZV]
+
+training <- subset(training,  select = -c(X, raw_timestamp_part_1, raw_timestamp_part_2, cvtd_timestamp))
+testing <- subset(testing,  select = -c(X, raw_timestamp_part_1, raw_timestamp_part_2, cvtd_timestamp))
+```
+
+While quickly glancing through the data, it is clear that a large number of the values are monstly NA.  These values are removed from both the training and test set as they will not help create an acurate prediction model.  After that the remaining variables are tested for near zero variance.  Again, these vaeriables will interfear with the prediction.  After that, the variables: raw_timestamp_part_1, raw_timestamp_part_2, cvtd_timestamp, are removed as time does not appear to be a factor in this data.  The variable X is also removed as it is the row that the data was located in, in the csv file.  After all of these variables are removed there are `r ncol(training)` variables left in the data.
+
+```{r, echo=FALSE}
+inTrain <- createDataPartition(training$classe, p=0.75, list=FALSE)
+training.samp <- training[inTrain, ]
+testing.samp <- training[-inTrain, ]
+```
+
+The training set is devided up into two pieces a training and test set.  75% of the training data, will be used to create and train the models, and 25% will be used to determine the models accuracy.  With this devision, there are `r nrow(training.samp)` data points in my training sample and `r nrow(testing.samp)` data points in my testing sample.
+
+###Random Forest
+
+I decided to build a Ranom Forest Model.  Random Forest works by creating a large number of decision trees and after running them all, average the final prediction value, so the majority wins.  While a decision tree would be quicker, they have a tendancy for over fitting, and Random Forest helps deal with that tendancy for over fitting.
+
+```{r}
+mod_RF <- train(classe ~., method="rf", data = training.samp, trControl = trainControl(method="cv", number = 4))
+mod_RF$finalModel
+```
+
+Now that I have my model, I am going to test the model against the test data that I held back.  This provides a check to make sure that the model is not over fitted to the sample data.  If the model is overfitted, it won't do as well when it is run on the test data.  Given how low the OOB value is, I expected the out-of-sample error to be low, and the accuracy to be high.
+
+```{r, echo=FALSE}
+prediction <- predict(mod_RF, newdata = testing.samp)
+confusionMatrix(testing.samp$classe, prediction)
+```
+
+As shown by the matrix I have an accuracy value of 99.67%.
+
+###Running the Test Data
+
+At this point I have a model that I am happy with and I am going to run the test data.
+
+```{r, echo=FALSE}
+prediction.test <- predict(mod_RF, newdata = testing)
+prediction.test
+```
