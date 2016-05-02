@@ -7,99 +7,11 @@
   <meta name="Generator" content="Cocoa HTML Writer">
   <meta name="CocoaVersion" content="1404.46">
   <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 10.0px 0.0px; line-height: 40.0px; font: 39.0px Helvetica; color: #307eac; -webkit-text-stroke: #307eac}
-    p.p2 {margin: 0.0px 0.0px 10.0px 0.0px; line-height: 20.0px; font: 18.0px Helvetica; color: #307eac; -webkit-text-stroke: #307eac}
-    p.p4 {margin: 0.0px 0.0px 10.0px 0.0px; line-height: 40.0px; font: 25.0px Helvetica; color: #307eac; -webkit-text-stroke: #307eac}
-    p.p5 {margin: 0.0px 0.0px 10.0px 0.0px; line-height: 20.0px; font: 14.0px 'Helvetica Neue'; color: #555555; -webkit-text-stroke: #555555}
-    p.p6 {margin: 0.0px 0.0px 10.0px 0.0px; line-height: 20.0px; font: 14.0px 'Helvetica Neue'; color: #2fa4e7; -webkit-text-stroke: #2fa4e7}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 20.0px; font: 12.0px Courier; color: #323333; -webkit-text-stroke: #323333; background-color: #f5f5f5}
-    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 20.0px; font: 12.0px Courier; color: #323333; -webkit-text-stroke: #323333}
-    li.li3 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 20.0px; font: 14.0px 'Helvetica Neue'; color: #2fa4e7; -webkit-text-stroke: #2fa4e7}
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #000000; -webkit-text-stroke: #307eac}
     span.s1 {font-kerning: none}
-    span.s2 {-webkit-text-stroke: 0px #307eac}
-    span.s3 {-webkit-text-stroke: 0px #555555}
-    span.s4 {font: 14.0px 'Helvetica Neue'; font-kerning: none; color: #2fa4e7; -webkit-text-stroke: 0px #2fa4e7}
-    ul.ul1 {list-style-type: disc}
   </style>
 </head>
 <body>
-<p class="p1"><span class="s1">Practical Machine Learning Project</span></p>
-<p class="p2"><span class="s1">Diane Clow</span></p>
-<p class="p2"><span class="s1">May 1, 2016</span></p>
-<ul class="ul1">
-  <li class="li3"><span class="s2"></span><span class="s1">Introduction</span></li>
-  <li class="li3"><span class="s3"></span><span class="s1">Loading &amp; Cleaning the data and creating training/test sets</span></li>
-  <li class="li3"><span class="s3"></span><span class="s1">Random Forest</span></li>
-  <li class="li3"><span class="s3"></span><span class="s1">Running the Test Data</span></li>
-</ul>
-<p class="p4"><span class="s1">Introduction</span></p>
-<p class="p5"><span class="s1">For this project I am analyzing Human Activity Recognition data, and attempting to predict what excersize the user is performing at any given time. Each of the participants had sensors placed on their: wrist, bicepts, waist and on the dubbell itself. There are 5 classes of excersize in this study: Class A: performing the excersize exactly to the specification, Class B: throwing the elbows forward, Class C: lifitng the dumbbell halfway, Class D: lowering the dumbbell halfway, and Class E: throwing the hits to the front.</span></p>
-<p class="p5"><span class="s1">The training and test data can be downloaded throught the following links:</span></p>
-<p class="p6"><span class="s1"><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv<span class="s4"></span></a></span></p>
-<p class="p6"><span class="s1"><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv<span class="s4"></span></a></span></p>
-<p class="p5"><span class="s1">For more information on how this data was collected please go to the study performed by: Ugulino, W.; Cardador, D.; Vega, K.; Velloso, E.; Milidiu, R.; Fuks, H. called “Wearable Computing: Accelerometers’ Data Classification of Body Postures and Movements”. The study can be found here: <a href="http://groupware.les.inf.puc-rio.br/har"><span class="s4">http://groupware.les.inf.puc-rio.br/har</span></a>.</span></p>
-<p class="p4"><span class="s1">Loading &amp; Cleaning the data and creating training/test sets</span></p>
-<p class="p5"><span class="s1">For this analysis there are 19622 values and 160 columns in the training set. The test set contains 20 values and the same 160 columns.</span></p>
-<p class="p5"><span class="s1">While quickly glancing through the data, it is clear that a large number of the values are monstly NA. These values are removed from both the training and test set as they will not help create an acurate prediction model. After that the remaining variables are tested for near zero variance. Again, these vaeriables will interfear with the prediction. After that, the variables: raw_timestamp_part_1, raw_timestamp_part_2, cvtd_timestamp, are removed as time does not appear to be a factor in this data. The variable X is also removed as it is the row that the data was located in, in the csv file. After all of these variables are removed there are 55 variables left in the data.</span></p>
-<p class="p5"><span class="s1">The training set is devided up into two pieces a training and test set. 75% of the training data, will be used to create and train the models, and 25% will be used to determine the models accuracy. With this devision, there are 14718 data points in my training sample and 4904 data points in my testing sample.</span></p>
-<p class="p4"><span class="s1">Random Forest</span></p>
-<p class="p5"><span class="s1">I decided to build a Ranom Forest Model. Random Forest works by creating a large number of decision trees and after running them all, average the final prediction value, so the majority wins. While a decision tree would be quicker, they have a tendancy for over fitting, and Random Forest helps deal with that tendancy for over fitting.</span></p>
-<p class="p7"><span class="s1">mod_RF &lt;- train(classe ~., method="rf", data = training.samp, trControl = trainControl(method="cv", number = 4))</span></p>
-<p class="p8"><span class="s1">## Loading required package: randomForest</span></p>
-<p class="p8"><span class="s1">## randomForest 4.6-10</span></p>
-<p class="p8"><span class="s1">## Type rfNews() to see new features/changes/bug fixes.</span></p>
-<p class="p7"><span class="s1">mod_RF$finalModel</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space"> </span></span></p>
-<p class="p8"><span class="s1">## Call:</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">  </span>randomForest(x = x, y = y, mtry = param$mtry)<span class="Apple-converted-space"> </span></span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">                </span>Type of random forest: classification</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">                      </span>Number of trees: 500</span></p>
-<p class="p8"><span class="s1">## No. of variables tried at each split: 30</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space"> </span></span></p>
-<p class="p8"><span class="s1">## <span class="Apple-converted-space">        </span>OOB estimate of<span class="Apple-converted-space">  </span>error rate: 0.22%</span></p>
-<p class="p8"><span class="s1">## Confusion matrix:</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">      </span>A<span class="Apple-converted-space">    </span>B<span class="Apple-converted-space">    </span>C<span class="Apple-converted-space">    </span>D<span class="Apple-converted-space">    </span>E<span class="Apple-converted-space">  </span>class.error</span></p>
-<p class="p8"><span class="s1">## A 4183<span class="Apple-converted-space">    </span>1<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>1 0.0004778973</span></p>
-<p class="p8"><span class="s1">## B<span class="Apple-converted-space">    </span>4 2843<span class="Apple-converted-space">    </span>1<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0 0.0017556180</span></p>
-<p class="p8"><span class="s1">## C<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>4 2563<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0 0.0015582392</span></p>
-<p class="p8"><span class="s1">## D<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>9 2402<span class="Apple-converted-space">    </span>1 0.0041459370</span></p>
-<p class="p8"><span class="s1">## E<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>1<span class="Apple-converted-space">    </span>0 <span class="Apple-converted-space">  </span>10 2695 0.0040650407</span></p>
-<p class="p5"><span class="s1">Now that I have my model, I am going to test the model against the test data that I held back. This provides a check to make sure that the model is not over fitted to the sample data. If the model is overfitted, it won’t do as well when it is run on the test data. Given how low the OOB value is, I expected the out-of-sample error to be low, and the accuracy to be high.</span></p>
-<p class="p8"><span class="s1">## Confusion Matrix and Statistics</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space"> </span></span></p>
-<p class="p8"><span class="s1">## <span class="Apple-converted-space">          </span>Reference</span></p>
-<p class="p8"><span class="s1">## Prediction<span class="Apple-converted-space">    </span>A<span class="Apple-converted-space">    </span>B<span class="Apple-converted-space">    </span>C<span class="Apple-converted-space">    </span>D<span class="Apple-converted-space">    </span>E</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">          </span>A 1395<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">          </span>B<span class="Apple-converted-space">    </span>3<span class="Apple-converted-space">  </span>942<span class="Apple-converted-space">    </span>4<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">          </span>C<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>2<span class="Apple-converted-space">  </span>852<span class="Apple-converted-space">    </span>1<span class="Apple-converted-space">    </span>0</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">          </span>D<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>2<span class="Apple-converted-space">  </span>802<span class="Apple-converted-space">    </span>0</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">          </span>E<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>0<span class="Apple-converted-space">    </span>4<span class="Apple-converted-space">  </span>897</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space"> </span></span></p>
-<p class="p8"><span class="s1">## Overall Statistics</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">                                           </span></span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">                </span>Accuracy : 0.9967 <span class="Apple-converted-space">         </span></span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">                  </span>95% CI : (0.9947, 0.9981)</span></p>
-<p class="p8"><span class="s1">## <span class="Apple-converted-space">    </span>No Information Rate : 0.2851 <span class="Apple-converted-space">         </span></span></p>
-<p class="p8"><span class="s1">## <span class="Apple-converted-space">    </span>P-Value [Acc &gt; NIR] : &lt; 2.2e-16<span class="Apple-converted-space">       </span></span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">                                           </span></span></p>
-<p class="p8"><span class="s1">## <span class="Apple-converted-space">                  </span>Kappa : 0.9959 <span class="Apple-converted-space">         </span></span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">  </span>Mcnemar's Test P-Value : NA <span class="Apple-converted-space">             </span></span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space"> </span></span></p>
-<p class="p8"><span class="s1">## Statistics by Class:</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space"> </span></span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">                      </span>Class: A Class: B Class: C Class: D Class: E</span></p>
-<p class="p8"><span class="s1">## Sensitivity<span class="Apple-converted-space">            </span>0.9979 <span class="Apple-converted-space">  </span>0.9979 <span class="Apple-converted-space">  </span>0.9930 <span class="Apple-converted-space">  </span>0.9938 <span class="Apple-converted-space">  </span>1.0000</span></p>
-<p class="p8"><span class="s1">## Specificity<span class="Apple-converted-space">            </span>1.0000 <span class="Apple-converted-space">  </span>0.9982 <span class="Apple-converted-space">  </span>0.9993 <span class="Apple-converted-space">  </span>0.9995 <span class="Apple-converted-space">  </span>0.9990</span></p>
-<p class="p8"><span class="s1">## Pos Pred Value <span class="Apple-converted-space">        </span>1.0000 <span class="Apple-converted-space">  </span>0.9926 <span class="Apple-converted-space">  </span>0.9965 <span class="Apple-converted-space">  </span>0.9975 <span class="Apple-converted-space">  </span>0.9956</span></p>
-<p class="p8"><span class="s1">## Neg Pred Value <span class="Apple-converted-space">        </span>0.9991 <span class="Apple-converted-space">  </span>0.9995 <span class="Apple-converted-space">  </span>0.9985 <span class="Apple-converted-space">  </span>0.9988 <span class="Apple-converted-space">  </span>1.0000</span></p>
-<p class="p8"><span class="s1">## Prevalence <span class="Apple-converted-space">            </span>0.2851 <span class="Apple-converted-space">  </span>0.1925 <span class="Apple-converted-space">  </span>0.1750 <span class="Apple-converted-space">  </span>0.1646 <span class="Apple-converted-space">  </span>0.1829</span></p>
-<p class="p8"><span class="s1">## Detection Rate <span class="Apple-converted-space">        </span>0.2845 <span class="Apple-converted-space">  </span>0.1921 <span class="Apple-converted-space">  </span>0.1737 <span class="Apple-converted-space">  </span>0.1635 <span class="Apple-converted-space">  </span>0.1829</span></p>
-<p class="p8"><span class="s1">## Detection Prevalence <span class="Apple-converted-space">  </span>0.2845 <span class="Apple-converted-space">  </span>0.1935 <span class="Apple-converted-space">  </span>0.1743 <span class="Apple-converted-space">  </span>0.1639 <span class="Apple-converted-space">  </span>0.1837</span></p>
-<p class="p8"><span class="s1">## Balanced Accuracy<span class="Apple-converted-space">      </span>0.9989 <span class="Apple-converted-space">  </span>0.9981 <span class="Apple-converted-space">  </span>0.9961 <span class="Apple-converted-space">  </span>0.9967 <span class="Apple-converted-space">  </span>0.9995</span></p>
-<p class="p5"><span class="s1">As shown by the matrix I have an accuracy value of 99.67%.</span></p>
-<p class="p4"><span class="s1">Running the Test Data</span></p>
-<p class="p5"><span class="s1">At this point I have a model that I am happy with and I am going to run the test data.</span></p>
-<p class="p8"><span class="s1">##<span class="Apple-converted-space">  </span>[1] B A B A A E D B A A B C B A E E A B B B</span></p>
-<p class="p8"><span class="s1">## Levels: A B C D E</span></p>
+<p class="p1"><span class="s1">Is this thing on</span></p>
 </body>
 </html>
